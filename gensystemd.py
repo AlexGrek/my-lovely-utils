@@ -100,9 +100,12 @@ def save_service_file(service_path, content):
         logger.error(f"Error saving service file: {e}")
         return False
 
-def run_systemctl_command(command, service_name):
+def run_systemctl_command(command, service_name=None):
     """Run a systemctl command and log the results."""
-    full_command = ['systemctl'] + command + [service_name]
+    full_command = ['systemctl'] + command
+    if service_name:
+        full_command.append(service_name)
+    
     logger.info(f"Executing: {' '.join(full_command)}")
     
     try:
@@ -144,7 +147,7 @@ def install_service(service_name, content):
     
     # Reload systemd daemon
     logger.info("Reloading systemd daemon...")
-    if not run_systemctl_command(['daemon-reload'], ''):
+    if not run_systemctl_command(['daemon-reload']):
         logger.error("Failed to reload systemd daemon")
         return False
     
